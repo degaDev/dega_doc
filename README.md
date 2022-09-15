@@ -363,7 +363,51 @@ public class SocketManager : MonoBehaviour
 # 3.sever-client basic communicate 
 ## Server side
 
+## Client side
+เข้าไปแก้ไข c# script ก่อนหน้านี้โดยทำการเพิ่มตัวแปร UI และ Function การส่งข้อมูลไปยัง Server
+สร้างตัวแปร Input field 2 ตัวเพื่อส่ง EventName และ Data
+```cs
+public InputField EventNameTxt;
+public InputField DataTxt;
+```
+### สร้าง Function ส่งข้อมูลไปยัง Server
+```cs
+public void EmitTest()
+{
+    string eventName = EventNameTxt.text.Trim().Length < 1 ? "hello" : EventNameTxt.text;
+    string txt = DataTxt.text;
+    if (!IsJSON(txt))
+    {
+        socket.Emit(eventName, txt);
+    }
+    else
+    {
+        socket.EmitStringAsJSON(eventName, txt);
+    }
+}
 
+```
+>eventName คือการเรียกขอใช้งาน event ที่อยู่บน server โดยชื่อของ event จำเป็นต้องเป็นชื่อเดียวกันกับที่ตั้งไว้บน server นั่นก็คือ event “hello” 
+>
+>txt คือข้อมูลที่เราจะแนบส่งไปพร้อมกับการเรียกใช้ event  “hello” ซึ่งทางฝั่งของ server จะต้องมี parameter ที่มีไว้รองรับข้อมูลที่แนบมาด้วย
+
+### เพื่อให้มั่นใจว่าข้อมูลที่ส่งไปจะอยู่ในรูปแบบที่เราต้องการ ในที่นี้เราต้องการส่งข้อมูลไปในรูปแบบของ Json จึงต้องดักเงื่อนไขการส่งข้อมูลก่อนที่จะส่งไปยัง Server
+> 
+>เงื่อนไขที่กำหนดไว้ คือ ถ้า txt(ข้อมูลที่จะส่งไปที่ server) อยู่ในรูปแบบของ Json หรือไม่ ถ้าอยู่ในรูปแบบของ Json ให้ส่งข้อมูลไปยัง Server
+>
+>ถ้าข้อมูลไม่ได้อยู่ในรูปแบบของ Json ให้แปลงข้อมูลรูปแบบจากรูปแบบ string ไปเป็นเป็นไฟล์ Json แล้วค่อยส่งไปยัง Server
+
+### Setup UI
+สร้าง Input Field ขึ้นมา 2 ช่องเพื่อใส่ Event Name และ Data / สร้างปุ่ม Emit และอื่นๆตามรูปภาพ โดยเราจะใช้ปุ่ม Emit เป็นหลักก่อน
+![clientUIsetup](./src/Topic3_clientsite_setup_inputfield/Emit%20UI%20Screen.png)
+### Reference UI
+นำ c# script ที่ทำก่อนหน้ามาติดตั้งที่ Gameobject และทำการ reference Input Field ทั้ง 2
+>
+![clientUIsetup](./src/Topic3_clientsite_setup_inputfield/ref.png)
+### Add on click event to button
+เพิ่ม event on click ให้กับปุ่ม Emit
+>
+![clientUIsetup](src/Topic3_clientsite_setup_inputfield/but.png)
 # 4.sever-client join room 
 
 
